@@ -1,0 +1,28 @@
+<header class="site-header" [class.menu-open]="isMenuOpen">
+  <div class="container header-content">
+    <a class="brand" routerLink="/">SAQ Esthetic Clinic</a>
+    <nav class="desktop-nav">
+      <button type="button" class="nav-link" (click)="navigateWithFragment('services')">Услуги</button>
+      <button type="button" class="nav-link" (click)="navigateWithFragment('education')">Обучение</button>
+      <button type="button" class="nav-link" (click)="navigateWithFragment('store')">Магазин</button>
+      <a class="nav-link" routerLink="/submissions">Заявки</a>
+      <a class="nav-link" href="https://www.instagram.com/saq_esthetic_clinic/" target="_blank" rel="noopener">Instagram</a>
+    </nav>
+    <button class="menu-toggle" (click)="isMenuOpen = !isMenuOpen" aria-label="Меню" type="button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <nav class="mobile-nav" *ngIf="isMenuOpen">
+    <button type="button" class="nav-link" (click)="navigateWithFragment('services')">Услуги</button>
+    <button type="button" class="nav-link" (click)="navigateWithFragment('education')">Обучение</button>
+    <button type="button" class="nav-link" (click)="navigateWithFragment('store')">Магазин</button>
+    <a class="nav-link" routerLink="/submissions" (click)="isMenuOpen = false">Заявки</a>
+    <a class="nav-link" href="https://www.instagram.com/saq_esthetic_clinic/" target="_blank" rel="noopener">Instagram</a>
+  </nav>
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>
