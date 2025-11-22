@@ -1,0 +1,35 @@
+.footer-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.footer-links h4,
+.footer-links a,
+.footer-grid h4,
+.footer-grid p {
+  margin: 0;
+}
+
+.footer-links a {
+  display: block;
+  margin: 0.5rem 0;
+}
+
+.social-links a {
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+footer .copyright {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 2fr 1.5fr 1.5fr;
+    align-items: start;
+  }
+}

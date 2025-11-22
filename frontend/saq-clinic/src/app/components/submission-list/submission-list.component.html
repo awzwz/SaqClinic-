@@ -1,0 +1,50 @@
+<section class="submissions">
+  <div class="container">
+    <header class="submissions-header">
+      <div>
+        <h1>Заявки с сайта</h1>
+        <p>Следите за новыми обращениями гостей и оперативно связывайтесь с ними.</p>
+      </div>
+      <button class="btn btn-primary" (click)="fetchSubmissions()">Обновить</button>
+    </header>
+
+    <div class="status" *ngIf="isLoading">Загружаем данные...</div>
+    <div class="status error" *ngIf="hasError">Не удалось получить данные. Проверьте соединение и повторите.</div>
+
+    <div class="table-wrapper" *ngIf="!isLoading && !hasError">
+      <table *ngIf="submissions.length; else emptyState">
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Имя</th>
+            <th>Телефон</th>
+            <th>Email</th>
+            <th>Услуга</th>
+            <th>Комментарий</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let submission of submissions">
+            <td>{{ submission.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+            <td>{{ submission.fullName }}</td>
+            <td><a [href]="'tel:' + submission.phoneNumber">{{ submission.phoneNumber }}</a></td>
+            <td>
+              <a *ngIf="submission.email" [href]="'mailto:' + submission.email">{{ submission.email }}</a>
+              <span *ngIf="!submission.email">—</span>
+            </td>
+            <td>{{ submission.preferredService || '—' }}</td>
+            <td>{{ submission.message || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #emptyState>
+        <div class="empty-state">
+          <h3>Пока нет заявок</h3>
+          <p>Разместите сайт в продакшене и начните получать обращения клиентов.</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <a class="back-link" routerLink="/">← Вернуться на главную страницу</a>
+  </div>
+</section>
