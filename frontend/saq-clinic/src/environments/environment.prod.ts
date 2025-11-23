@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://api.saqclinic.kz'
+  apiBaseUrl: 'https://saqclinic.onrender.com'
 };
