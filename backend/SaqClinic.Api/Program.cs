@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SaqClinic.Api.Data;
 using SaqClinic.Api.Models;
+using SaqClinic.Api.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,13 +19,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
     {
-        policy.WithOrigins(
-                "http://localhost:4200",
-                "https://localhost:4200")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
+
 
 builder.WebHost.UseUrls("http://0.0.0.0:5000");
 
@@ -45,9 +46,20 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGet("/api/submissions", async (ApplicationDbContext context) =>
-    Results.Ok(await context.ContactSubmissions
+{
+    // get all submissions from the database
+    var submissions = await context.ContactSubmissions
+        .AsNoTracking()
+        .ToListAsync();
+
+    // sort them in memory by CreatedAt (newest first)
+    var ordered = submissions
         .OrderByDescending(s => s.CreatedAt)
-        .ToListAsync()));
+        .ToList();
+
+    return Results.Ok(ordered);
+});
+
 
 app.MapPost("/api/submissions", async (ContactSubmissionRequest request, ApplicationDbContext context) =>
 {
