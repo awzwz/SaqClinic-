@@ -5,6 +5,8 @@ using SaqClinic.Api.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ---------- Services ----------
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -14,28 +16,34 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 
+// CORS: разрешаем запросы с любого фронтенда (локально и на Render)
 const string corsPolicyName = "AllowFrontend";
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
     {
         policy
-            .AllowAnyOrigin()
+            .AllowAnyOrigin()   // можно потом сузить до конкретных доменов
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 
-
-builder.WebHost.UseUrls("http://0.0.0.0:5000");
-
+// ВАЖНО: НЕ указываем UseUrls здесь.
+// Локально ASP.NET сам слушает 5000/5001.
+// В Docker/Render мы задаём порт через переменную ASPNETCORE_URLS.
 var app = builder.Build();
+
+// ---------- DB init ----------
 
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.EnsureCreated();
 }
+
+// ---------- Middleware ----------
 
 app.UseCors(corsPolicyName);
 
@@ -45,14 +53,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// ---------- Endpoints ----------
+
+// Получение заявок
 app.MapGet("/api/submissions", async (ApplicationDbContext context) =>
 {
-    // get all submissions from the database
+    // забираем все записи из БД
     var submissions = await context.ContactSubmissions
         .AsNoTracking()
         .ToListAsync();
 
-    // sort them in memory by CreatedAt (newest first)
+    // сортируем по дате уже в памяти (SQLite не умеет ORDER BY по DateTimeOffset)
     var ordered = submissions
         .OrderByDescending(s => s.CreatedAt)
         .ToList();
@@ -60,7 +71,7 @@ app.MapGet("/api/submissions", async (ApplicationDbContext context) =>
     return Results.Ok(ordered);
 });
 
-
+// Создание заявки
 app.MapPost("/api/submissions", async (ContactSubmissionRequest request, ApplicationDbContext context) =>
 {
     var submission = new ContactSubmission
@@ -79,9 +90,12 @@ app.MapPost("/api/submissions", async (ContactSubmissionRequest request, Applica
     return Results.Created($"/api/submissions/{submission.Id}", submission);
 });
 
+// Health-check
 app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy" }));
 
 app.Run();
+
+// ---------- DTO ----------
 
 namespace SaqClinic.Api.Models
 {
