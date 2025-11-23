@@ -24,15 +24,15 @@ builder.Services.AddCors(options =>
     options.AddPolicy(corsPolicyName, policy =>
     {
         policy
-            .AllowAnyOrigin()   // можно потом сузить до конкретных доменов
+            .AllowAnyOrigin()   // потом можно сузить до конкретных доменов
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 
-// ВАЖНО: НЕ указываем UseUrls здесь.
-// Локально ASP.NET сам слушает 5000/5001.
-// В Docker/Render мы задаём порт через переменную ASPNETCORE_URLS.
+// ВАЖНО: НЕ вызываем builder.WebHost.UseUrls(...)
+// Локально Kestrel сам слушает 5000,
+// в Docker порт задаётся через ASPNETCORE_URLS (в Dockerfile).
 var app = builder.Build();
 
 // ---------- DB init ----------
@@ -58,12 +58,11 @@ if (app.Environment.IsDevelopment())
 // Получение заявок
 app.MapGet("/api/submissions", async (ApplicationDbContext context) =>
 {
-    // забираем все записи из БД
     var submissions = await context.ContactSubmissions
         .AsNoTracking()
         .ToListAsync();
 
-    // сортируем по дате уже в памяти (SQLite не умеет ORDER BY по DateTimeOffset)
+    // SQLite не умеет ORDER BY по DateTimeOffset, сортируем в памяти
     var ordered = submissions
         .OrderByDescending(s => s.CreatedAt)
         .ToList();
