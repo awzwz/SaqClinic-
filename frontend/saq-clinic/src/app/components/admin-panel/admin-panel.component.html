@@ -1,0 +1,38 @@
+<section class="admin-panel">
+  <div class="container">
+    <h1 class="title">Заявки с сайта</h1>
+
+    <!-- Блок логина -->
+    <ng-container *ngIf="(isLoggedIn$ | async) === false; else adminArea">
+      <p class="notice">
+        Для доступа к заявкам введите пароль, который вы получили от разработчика.
+      </p>
+
+      <form (ngSubmit)="onLogin()" class="login-form">
+        <input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Пароль"
+          class="input"
+          required
+        />
+
+        <button type="submit" [disabled]="isLoading" class="btn">
+          {{ isLoading ? 'Входим...' : 'Войти' }}
+        </button>
+      </form>
+
+      <p *ngIf="error" class="error">{{ error }}</p>
+    </ng-container>
+
+    <!-- Блок с заявками -->
+    <ng-template #adminArea>
+      <div class="admin-header">
+        <button class="btn-secondary" (click)="onLogout()">Выйти</button>
+      </div>
+
+      <app-submission-list></app-submission-list>
+    </ng-template>
+  </div>
+</section>

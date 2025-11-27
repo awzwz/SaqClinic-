@@ -5,7 +5,12 @@ using SaqClinic.Api.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ---------- Services ----------
+// Базовый пароль для локальной разработки (фолбэк)
+const string DefaultAdminPassword = "SaqClinic2024!";
+
+// PORT для Render (там он задаётся в env), локально — 5005
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5005";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -16,34 +21,26 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 
-// CORS: разрешаем запросы с любого фронтенда (локально и на Render)
 const string corsPolicyName = "AllowFrontend";
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
     {
         policy
-            .AllowAnyOrigin()   // потом можно сузить до конкретных доменов
+            .AllowAnyOrigin()   // пока оставим так, чтобы не ловить CORS
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 
-// ВАЖНО: НЕ вызываем builder.WebHost.UseUrls(...)
-// Локально Kestrel сам слушает 5000,
-// в Docker порт задаётся через ASPNETCORE_URLS (в Dockerfile).
 var app = builder.Build();
 
-// ---------- DB init ----------
-
+// создаём БД, если её нет
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.EnsureCreated();
 }
-
-// ---------- Middleware ----------
 
 app.UseCors(corsPolicyName);
 
@@ -53,24 +50,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// ---------- Endpoints ----------
-
-// Получение заявок
-app.MapGet("/api/submissions", async (ApplicationDbContext context) =>
+// ====== Читаем пароль админ-панели из переменной окружения ======
+var adminPassword = app.Configuration["ADMIN_PANEL_PASSWORD"];
+if (string.IsNullOrWhiteSpace(adminPassword))
 {
-    var submissions = await context.ContactSubmissions
-        .AsNoTracking()
-        .ToListAsync();
+    // запасной вариант для локальной разработки
+    adminPassword = DefaultAdminPassword;
+}
+// ================================================================
 
-    // SQLite не умеет ORDER BY по DateTimeOffset, сортируем в памяти
-    var ordered = submissions
-        .OrderByDescending(s => s.CreatedAt)
-        .ToList();
-
-    return Results.Ok(ordered);
-});
-
-// Создание заявки
+// ПУБЛИЧНЫЙ endpoint: форма на сайте создаёт новую заявку
 app.MapPost("/api/submissions", async (ContactSubmissionRequest request, ApplicationDbContext context) =>
 {
     var submission = new ContactSubmission
@@ -89,12 +78,28 @@ app.MapPost("/api/submissions", async (ContactSubmissionRequest request, Applica
     return Results.Created($"/api/submissions/{submission.Id}", submission);
 });
 
-// Health-check
+// ЗАКРЫТЫЙ endpoint для клиники: список заявок
+// Требует заголовок X-Admin-Token с правильным паролем
+app.MapGet("/api/admin/submissions", async (HttpContext http, ApplicationDbContext context) =>
+{
+    var token = http.Request.Headers["X-Admin-Token"].FirstOrDefault();
+
+    if (token != adminPassword)
+    {
+        return Results.Unauthorized();
+    }
+
+    var submissions = await context.ContactSubmissions
+        .AsNoTracking()
+        .OrderByDescending(s => s.CreatedAt)
+        .ToListAsync();
+
+    return Results.Ok(submissions);
+});
+
 app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy" }));
 
 app.Run();
-
-// ---------- DTO ----------
 
 namespace SaqClinic.Api.Models
 {
