@@ -5,12 +5,14 @@ using SaqClinic.Api.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Базовый пароль для локальной разработки (фолбэк)
-const string DefaultAdminPassword = "SaqClinic2024!";
-
-// PORT для Render (там он задаётся в env), локально — 5005
-var port = Environment.GetEnvironmentVariable("PORT") ?? "5005";
-builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+// ===== Админ-пароль / токен =============================
+// Берём из переменной окружения, иначе дефолт
+var adminToken = builder.Configuration["ADMIN_PANEL_PASSWORD"];
+if (string.IsNullOrWhiteSpace(adminToken))
+{
+    adminToken = "SaqClinic2024!"; // запасной вариант
+}
+// ========================================================
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -27,15 +29,18 @@ builder.Services.AddCors(options =>
     options.AddPolicy(corsPolicyName, policy =>
     {
         policy
-            .AllowAnyOrigin()   // пока оставим так, чтобы не ловить CORS
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 
+// локально слушаем на 5005
+builder.WebHost.UseUrls("http://0.0.0.0:5005");
+
 var app = builder.Build();
 
-// создаём БД, если её нет
+// создать БД, если её ещё нет
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -50,16 +55,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// ====== Читаем пароль админ-панели из переменной окружения ======
-var adminPassword = app.Configuration["ADMIN_PANEL_PASSWORD"];
-if (string.IsNullOrWhiteSpace(adminPassword))
-{
-    // запасной вариант для локальной разработки
-    adminPassword = DefaultAdminPassword;
-}
-// ================================================================
-
-// ПУБЛИЧНЫЙ endpoint: форма на сайте создаёт новую заявку
+// ---------- Публичный endpoint: форма с сайта ----------
 app.MapPost("/api/submissions", async (ContactSubmissionRequest request, ApplicationDbContext context) =>
 {
     var submission = new ContactSubmission
@@ -78,13 +74,25 @@ app.MapPost("/api/submissions", async (ContactSubmissionRequest request, Applica
     return Results.Created($"/api/submissions/{submission.Id}", submission);
 });
 
-// ЗАКРЫТЫЙ endpoint для клиники: список заявок
-// Требует заголовок X-Admin-Token с правильным паролем
+// ---------- НОВЫЙ endpoint: логин в админ-панель ----------
+app.MapPost("/api/admin/login", (AdminLoginRequest login) =>
+{
+    // просто сравниваем пароль
+    if (login.Password == adminToken)
+    {
+        // фронт ждёт объект с полем token
+        return Results.Ok(new { token = adminToken });
+    }
+
+    return Results.Unauthorized();
+});
+
+// ---------- Закрытый endpoint: список заявок ----------
 app.MapGet("/api/admin/submissions", async (HttpContext http, ApplicationDbContext context) =>
 {
-    var token = http.Request.Headers["X-Admin-Token"].FirstOrDefault();
+    var tokenFromHeader = http.Request.Headers["X-Admin-Token"].FirstOrDefault();
 
-    if (token != adminPassword)
+    if (string.IsNullOrEmpty(tokenFromHeader) || tokenFromHeader != adminToken)
     {
         return Results.Unauthorized();
     }
@@ -101,6 +109,7 @@ app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy" }));
 
 app.Run();
 
+// ======================= MODELS =========================
 namespace SaqClinic.Api.Models
 {
     public record ContactSubmissionRequest
@@ -110,5 +119,10 @@ namespace SaqClinic.Api.Models
         public string? Email { get; init; }
         public string? PreferredService { get; init; }
         public string? Message { get; init; }
+    }
+
+    public record AdminLoginRequest
+    {
+        public string Password { get; init; } = string.Empty;
     }
 }
