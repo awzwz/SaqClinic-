@@ -30,16 +30,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 
 const string corsPolicyName = "AllowFrontend";
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
     {
         policy
-            .AllowAnyOrigin()   // можно ограничить доменом фронта позже
+            .WithOrigins(
+                "http://localhost:4200",              // dev Angular
+                "https://saqclinic-web.onrender.com" // production Angular on Render
+            )
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
+
 
 // на Render порт настраивается самим Render, локально можно удалить эту строку
 // builder.WebHost.UseUrls("http://0.0.0.0:5005");
