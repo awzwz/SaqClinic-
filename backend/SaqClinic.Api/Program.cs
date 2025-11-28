@@ -37,8 +37,9 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                "http://localhost:4200",              // dev Angular
-                "https://saqclinic-web.onrender.com" // production Angular on Render
+                "http://localhost:4200",               // dev Angular
+                "https://saqclinic-web.onrender.com",  // production Angular (Render)
+                "https://saqclinic.onrender.com"       // production API hostname when calling itself (Render)
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
