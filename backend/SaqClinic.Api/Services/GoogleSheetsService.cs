@@ -19,13 +19,31 @@ public class GoogleSheetsService
         _spreadsheetId = configuration["GoogleSheets:SpreadsheetId"] 
                          ?? throw new ArgumentNullException("GoogleSheets:SpreadsheetId is missing");
         _applicationName = configuration["GoogleSheets:ApplicationName"] ?? "SaqClinic";
-        _credentialsPath = Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
+        
+        // Allow overriding path via config/env var (e.g. "GoogleSheets:CredentialsPath" or "GOOGLE_SHEETS_CREDENTIALS_PATH")
+        var configPath = configuration["GoogleSheets:CredentialsPath"];
+        if (!string.IsNullOrWhiteSpace(configPath))
+        {
+            _credentialsPath = configPath;
+        }
+        else
+        {
+            // Fallback to current directory
+            _credentialsPath = Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
+        }
     }
 
     public async Task AppendSubmissionAsync(ContactSubmission submission)
     {
         try
         {
+            if (!File.Exists(_credentialsPath))
+            {
+                Console.WriteLine($"[GoogleSheets] Error: Credentials file NOT found at: {_credentialsPath}");
+                Console.WriteLine($"[GoogleSheets] Current Directory: {Directory.GetCurrentDirectory()}");
+                return;
+            }
+
             GoogleCredential credential;
             using (var stream = new FileStream(_credentialsPath, FileMode.Open, FileAccess.Read))
             {
