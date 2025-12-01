@@ -10,6 +10,7 @@ import { SubmissionListComponent } from './components/submission-list/submission
 import { FooterComponent } from './components/shared/footer/footer.component';
 import { ScrollRevealDirective } from './directives/scroll-reveal.directive';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
+import { SpecialistsComponent } from './components/specialists/specialists.component';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -21,6 +22,7 @@ import { AppRoutingModule } from './app-routing.module';
     FooterComponent,
     ScrollRevealDirective,
     AdminPanelComponent,
+    SpecialistsComponent,
   ],
   imports: [
     BrowserModule,
@@ -33,4 +35,4 @@ import { AppRoutingModule } from './app-routing.module';
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

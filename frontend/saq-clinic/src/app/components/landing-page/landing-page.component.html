@@ -8,7 +8,8 @@
         Запишитесь на персональную консультацию и почувствуйте сервис уровня люкс.
       </p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="https://wa.me/77763976662" target="_blank" rel="noopener">Записаться в WhatsApp</a>
+        <a class="btn btn-primary" href="https://wa.me/77763976662" target="_blank" rel="noopener">Записаться в
+          WhatsApp</a>
         <a class="btn btn-outline" href="tel:+7 776 397 6662">+7 776 397 6662</a>
       </div>
       <div class="metrics">
@@ -47,7 +48,8 @@
       <article class="service-card shadow-card" appScrollReveal *ngFor="let service of services">
         <h3>{{ service.title }}</h3>
         <p>{{ service.description }}</p>
-        <button class="btn btn-primary" (click)="contactForm.patchValue({ preferredService: service.title })">Выбрать</button>
+        <button class="btn btn-primary"
+          (click)="contactForm.patchValue({ preferredService: service.title })">Выбрать</button>
       </article>
     </div>
   </div>
@@ -61,7 +63,8 @@
     <div class="experience-text" appScrollReveal>
       <h2>Философия SAQ Esthetic Clinic</h2>
       <p>
-        Мы создаём интеллектуальную красоту без компромиссов: безопасно, деликатно и с фокусом на долгосрочный результат.
+        Мы создаём интеллектуальную красоту без компромиссов: безопасно, деликатно и с фокусом на долгосрочный
+        результат.
         Команда сертифицированных экспертов сопровождает вас на каждом этапе — от диагностики до home-care протоколов.
       </p>
       <ul>
@@ -84,7 +87,8 @@
         <div class="program-meta">{{ program.duration }}</div>
         <h3>{{ program.title }}</h3>
         <p>{{ program.description }}</p>
-        <a class="btn btn-primary" href="mailto:info@saqclinic.kz?subject=Запрос%20по%20обучению%20{{ program.title }}">Получить программу</a>
+        <a class="btn btn-primary"
+          href="mailto:info@saqclinic.kz?subject=Запрос%20по%20обучению%20{{ program.title }}">Получить программу</a>
       </article>
     </div>
   </div>
@@ -94,7 +98,8 @@
   <div class="container">
     <h2 class="section-title">Магазин косметики</h2>
     <p class="section-subtitle">
-      Профессиональные бренды и эксклюзивные линейки средств, подобранные врачами клиники для поддержания результата дома.
+      Профессиональные бренды и эксклюзивные линейки средств, подобранные врачами клиники для поддержания результата
+      дома.
     </p>
     <div class="grid grid-3">
       <article class="store-card shadow-card" appScrollReveal *ngFor="let collection of shopCollections">
@@ -111,12 +116,13 @@
     <div class="contact-text" appScrollReveal>
       <h2>Оставьте заявку</h2>
       <p>
-        Расскажите о своей цели, и мы подберём лучший маршрут ухода. Команда координаторов свяжется с вами в течение рабочего часа.
+        Расскажите о своей цели, и мы подберём лучший маршрут ухода. Команда координаторов свяжется с вами в течение
+        рабочего часа.
       </p>
       <div class="contact-details">
         <div>
           <strong>Адрес</strong>
-          <span>г. Астана, ул. Qabanbay Batyr 15</span>
+          <span>Керей, Жанибек хандар улица, 2</span>
         </div>
         <div>
           <strong>Телефон</strong>
@@ -124,7 +130,8 @@
         </div>
         <div>
           <strong>Instagram</strong>
-          <a href="https://www.instagram.com/saq_esthetic_clinic/" target="_blank" rel="noopener">&#64;saq_esthetic_clinic</a>
+          <a href="https://www.instagram.com/saq_esthetic_clinic/" target="_blank"
+            rel="noopener">&#64;saq_esthetic_clinic</a>
         </div>
       </div>
     </div>
@@ -176,8 +183,10 @@
         {{ isSubmitting ? 'Отправляем...' : 'Отправить заявку' }}
       </button>
 
-      <p class="form-message success" *ngIf="submissionSuccess === true">Спасибо! Мы свяжемся с вами в ближайшее время.</p>
-      <p class="form-message error" *ngIf="submissionSuccess === false">Не удалось отправить форму. Попробуйте ещё раз.</p>
+      <p class="form-message success" *ngIf="submissionSuccess === true">Спасибо! Мы свяжемся с вами в ближайшее время.
+      </p>
+      <p class="form-message error" *ngIf="submissionSuccess === false">Не удалось отправить форму. Попробуйте ещё раз.
+      </p>
     </form>
   </div>
 </section>

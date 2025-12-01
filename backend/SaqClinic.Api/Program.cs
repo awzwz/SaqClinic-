@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SaqClinic.Api.Data;
 using SaqClinic.Api.Models;
 using SaqClinic.Api.Entities;
+using SaqClinic.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
+
+builder.Services.AddScoped<GoogleSheetsService>();
 
 const string corsPolicyName = "AllowFrontend";
 
@@ -68,7 +71,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // ---- ПУБЛИЧНАЯ ЗАЯВКА ----
-app.MapPost("/api/submissions", async (ContactSubmissionRequest request, ApplicationDbContext context) =>
+app.MapPost("/api/submissions", async (ContactSubmissionRequest request, ApplicationDbContext context, GoogleSheetsService sheetsService) =>
 {
     var submission = new ContactSubmission
     {
@@ -82,6 +85,11 @@ app.MapPost("/api/submissions", async (ContactSubmissionRequest request, Applica
 
     context.ContactSubmissions.Add(submission);
     await context.SaveChangesAsync();
+
+    // Fire and forget (or await if we want to ensure it's saved to sheets before returning)
+    // For better UX, we might want to await it to catch errors, or run in background.
+    // Here we await it to ensure data consistency for now.
+    await sheetsService.AppendSubmissionAsync(submission);
 
     return Results.Created($"/api/submissions/{submission.Id}", submission);
 });
@@ -109,12 +117,22 @@ app.MapGet("/api/admin/submissions", async (HttpContext http, ApplicationDbConte
         return Results.Unauthorized();
     }
 
-    var submissions = await context.ContactSubmissions
-        .AsNoTracking()
-        .OrderByDescending(s => s.CreatedAt)
-        .ToListAsync();
+    try
+    {
+        var submissions = await context.ContactSubmissions
+            .AsNoTracking()
+            .OrderByDescending(s => s.CreatedAt)
+            .ToListAsync();
+        
+        // var submissions = new List<object>(); // Dummy list
 
-    return Results.Ok(submissions);
+        return Results.Ok(submissions);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"ERROR fetching submissions: {ex}");
+        return Results.Problem(ex.Message);
+    }
 });
 
 app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy" }));

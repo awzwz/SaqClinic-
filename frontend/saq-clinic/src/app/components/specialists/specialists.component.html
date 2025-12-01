@@ -1,0 +1,18 @@
+<section class="specialists-section">
+    <div class="container">
+        <h2 class="section-title">Наши Специалисты</h2>
+
+        <div class="specialists-grid">
+            <div class="specialist-card" *ngFor="let specialist of specialists">
+                <div class="image-container">
+                    <img [src]="specialist.image" [alt]="specialist.name">
+                </div>
+                <div class="content">
+                    <h3 class="name">{{ specialist.name }}</h3>
+                    <p class="role">{{ specialist.role }}</p>
+                    <p class="description">{{ specialist.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
