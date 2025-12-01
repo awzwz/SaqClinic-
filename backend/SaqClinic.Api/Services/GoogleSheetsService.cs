@@ -30,6 +30,12 @@ public class GoogleSheetsService
         {
             // Fallback to current directory
             _credentialsPath = Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
+            
+            // If not found in current directory, check Render's default secret path
+            if (!File.Exists(_credentialsPath) && File.Exists("/etc/secrets/credentials.json"))
+            {
+                _credentialsPath = "/etc/secrets/credentials.json";
+            }
         }
     }
 
@@ -40,6 +46,7 @@ public class GoogleSheetsService
             if (!File.Exists(_credentialsPath))
             {
                 Console.WriteLine($"[GoogleSheets] Error: Credentials file NOT found at: {_credentialsPath}");
+                Console.WriteLine($"[GoogleSheets] Checked also: /etc/secrets/credentials.json");
                 Console.WriteLine($"[GoogleSheets] Current Directory: {Directory.GetCurrentDirectory()}");
                 return;
             }
