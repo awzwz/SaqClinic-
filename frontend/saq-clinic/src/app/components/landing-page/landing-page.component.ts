@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { ApiService, ContactSubmission } from '../../services/api.service';
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss']
 })
-export class LandingPageComponent implements OnDestroy {
+export class LandingPageComponent implements OnInit, OnDestroy {
   contactForm: FormGroup;
   isSubmitting = false;
   submissionSuccess: boolean | null = null;
@@ -63,6 +63,13 @@ export class LandingPageComponent implements OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
+  readonly experienceImages = [
+    'assets/images/experience/exterior.jpg',
+    'assets/images/experience/interior.jpg'
+  ];
+  currentExperienceImageIndex = 0;
+  private carouselInterval: any;
+
   constructor(private readonly fb: FormBuilder, private readonly apiService: ApiService) {
     this.contactForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(3)]],
@@ -71,6 +78,10 @@ export class LandingPageComponent implements OnDestroy {
       preferredService: ['', Validators.required],
       message: ['']
     });
+  }
+
+  ngOnInit(): void {
+    this.startCarousel();
   }
 
   submit(): void {
@@ -101,8 +112,17 @@ export class LandingPageComponent implements OnDestroy {
       });
   }
 
+  private startCarousel(): void {
+    this.carouselInterval = setInterval(() => {
+      this.currentExperienceImageIndex = (this.currentExperienceImageIndex + 1) % this.experienceImages.length;
+    }, 5000);
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.carouselInterval) {
+      clearInterval(this.carouselInterval);
+    }
   }
 }

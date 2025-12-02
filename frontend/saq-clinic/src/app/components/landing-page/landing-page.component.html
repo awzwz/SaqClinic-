@@ -58,7 +58,13 @@
 <section class="section experience">
   <div class="container experience-content">
     <div class="experience-visual" appScrollReveal>
-      <div class="experience-image" aria-hidden="true"></div>
+      <div class="visual-card experience-card">
+        <div class="carousel-container">
+          <div class="carousel-image" *ngFor="let img of experienceImages; let i = index"
+            [style.background-image]="'url(' + img + ')'" [class.active]="i === currentExperienceImageIndex">
+          </div>
+        </div>
+      </div>
     </div>
     <div class="experience-text" appScrollReveal>
       <h2>Философия SAQ Esthetic Clinic</h2>
