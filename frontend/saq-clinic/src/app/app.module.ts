@@ -11,6 +11,7 @@ import { FooterComponent } from './components/shared/footer/footer.component';
 import { ScrollRevealDirective } from './directives/scroll-reveal.directive';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 import { SpecialistsComponent } from './components/specialists/specialists.component';
+import { PriceListComponent } from './components/price-list/price-list.component';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -23,6 +24,7 @@ import { AppRoutingModule } from './app-routing.module';
     ScrollRevealDirective,
     AdminPanelComponent,
     SpecialistsComponent,
+    PriceListComponent,
   ],
   imports: [
     BrowserModule,

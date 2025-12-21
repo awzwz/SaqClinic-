@@ -1,0 +1,70 @@
+<section class="section price-list" id="prices">
+    <div class="container">
+        <div class="section-header" appScrollReveal>
+
+            <h2 class="section-title">Прайс-лист</h2>
+            <p class="section-subtitle">
+                Прозрачное ценообразование на все виды косметологических и медицинских услуг.
+            </p>
+        </div>
+
+        <div class="price-tabs" appScrollReveal>
+            <button *ngFor="let category of categories" class="price-tab"
+                [class.active]="activeCategory === category.id" (click)="setActiveCategory(category.id)">
+                {{ category.title }}
+            </button>
+        </div>
+
+        <div class="price-content" appScrollReveal>
+            <ng-container *ngFor="let category of categories">
+                <div class="price-category-view" *ngIf="activeCategory === category.id">
+
+                    <!-- Laser Table Layout -->
+                    <div class="table-responsive" *ngIf="category.isLaser">
+                        <table class="price-table laser-table">
+                            <thead>
+                                <tr>
+                                    <th>Название процедуры</th>
+                                    <th>Для женщин (тг)</th>
+                                    <th>Для мужчин (тг)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of category.items" [class.header-row]="item.isHeader">
+                                    <td [attr.colspan]="item.isHeader ? 3 : 1">
+                                        {{ item.name }}
+                                    </td>
+                                    <ng-container *ngIf="!item.isHeader">
+                                        <td class="price-cell">{{ item.priceWomen }}</td>
+                                        <td class="price-cell">{{ item.priceMen }}</td>
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Standard List Layout -->
+                    <div class="price-list-grid" *ngIf="!category.isLaser">
+                        <div class="price-item" *ngFor="let item of category.items" [class.header-item]="item.isHeader">
+                            <ng-container *ngIf="item.isHeader">
+                                <h3>{{ item.name }}</h3>
+                            </ng-container>
+                            <ng-container *ngIf="!item.isHeader">
+                                <span class="item-name">{{ item.name }}</span>
+                                <span class="item-dots"></span>
+                                <span class="item-price">{{ item.price }} ₸</span>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                </div>
+            </ng-container>
+        </div>
+
+        <div class="price-cta" appScrollReveal>
+            <a class="btn btn-primary" href="https://wa.me/77003666201" target="_blank" rel="noopener">
+                Уточнить стоимость в WhatsApp
+            </a>
+        </div>
+    </div>
+</section>

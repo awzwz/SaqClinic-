@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -25,6 +25,10 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     {
       title: 'Уходовые ритуалы',
       description: 'Комбинированные программы для лица и тела, направленные на сияние кожи и баланс организма.'
+    },
+    {
+      title: 'Пластическая хирургия',
+      description: 'Современные методы пластической хирургии для коррекции и улучшения внешности от ведущих специалистов.'
     }
   ];
 
@@ -69,6 +73,9 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   ];
   currentExperienceImageIndex = 0;
   private carouselInterval: any;
+
+  @ViewChild('servicesCarousel') servicesCarousel!: ElementRef;
+  servicesScrollPosition = 0;
 
   constructor(private readonly fb: FormBuilder, private readonly apiService: ApiService) {
     this.contactForm = this.fb.group({
@@ -117,6 +124,21 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  scrollServices(direction: 'left' | 'right'): void {
+    if (this.servicesCarousel) {
+      const container = this.servicesCarousel.nativeElement;
+      const cardWidth = container.querySelector('.service-card-new')?.offsetWidth || 340;
+      const scrollAmount = cardWidth + 24; // card width + gap
+
+      if (direction === 'left') {
+        container.scrollLeft -= scrollAmount;
+      } else {
+        container.scrollLeft += scrollAmount;
+      }
+      this.servicesScrollPosition = container.scrollLeft;
     }
   }
 
