@@ -39,11 +39,17 @@ builder.Services.AddCors(options =>
     options.AddPolicy(corsPolicyName, policy =>
     {
         policy
-            .WithOrigins(
-                "http://localhost:4200",               // dev Angular
-                "https://saqclinic-web.onrender.com",  // production Angular (Render)
-                "https://saqclinic.onrender.com"       // production API hostname when calling itself (Render)
-            )
+            .SetIsOriginAllowed(origin => 
+            {
+                // Allow any localhost port in development
+                if (origin.StartsWith("http://localhost:") || origin.StartsWith("http://127.0.0.1:"))
+                    return true;
+                // Production origins
+                if (origin == "https://saqclinic-web.onrender.com" || 
+                    origin == "https://saqclinic.onrender.com")
+                    return true;
+                return false;
+            })
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

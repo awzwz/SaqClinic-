@@ -1,81 +1,193 @@
+// ===== SPECIALISTS SECTION =====
 .specialists-section {
-  padding: 4rem 0;
-  background-color: #f9f9f9;
+  padding: 6rem 0;
+  background: linear-gradient(180deg, #f8f9fa 0%, #fff 100%);
+}
 
-  .section-title {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 3rem;
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  background: rgba(15, 81, 50, 0.1);
+  color: var(--color-primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--color-primary);
+  margin: 0 0 1rem;
+}
+
+.section-subtitle {
+  color: rgba(47, 42, 36, 0.75);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.specialists-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: 0 1rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.specialist-card {
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(15, 81, 50, 0.15);
+  }
+}
+
+.card-image {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.5s ease;
+  }
+
+  .specialist-card:hover & img {
+    transform: scale(1.05);
+  }
+}
+
+.reviews-badge {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+
+  svg {
+    color: var(--color-secondary);
+  }
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.specialist-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0 0 0.5rem;
+}
+
+.specialist-role {
+  font-size: 0.85rem;
+  color: var(--color-secondary);
+  font-weight: 500;
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+}
+
+.helps-with {
+  margin-bottom: 1.5rem;
+
+  .helps-title {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
     color: var(--color-primary);
-    font-family: 'Playfair Display', serif; // Assuming this font is used elsewhere
+    margin-bottom: 0.75rem;
   }
 
-  .specialists-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 0 1rem;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
-  .specialist-card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease;
+  li {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
 
-    &:hover {
-      transform: translateY(-5px);
-    }
-
-    .image-container {
-      width: 100%;
-      height: 400px; // Fixed height for consistency
-      overflow: hidden;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: top;
-      }
-    }
-
-    .content {
-      padding: 1.5rem;
-      text-align: center;
-
-      .name {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        color: #2c3e50;
-      }
-
-      .role {
-        font-size: 0.9rem;
-        color: #e6b32e; // Gold accent color
-        font-weight: 500;
-        margin-bottom: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .description {
-        font-size: 0.95rem;
-        line-height: 1.6;
-        color: #666;
-      }
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-secondary);
     }
   }
 }
 
-@media (max-width: 768px) {
-  .specialists-section {
-    padding: 3rem 0;
+.btn-specialist {
+  display: block;
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: 2px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
-    .section-title {
-      font-size: 2rem;
-    }
+  &:hover {
+    background: var(--color-primary);
+    color: #fff;
+  }
+}
+
+@media (max-width: 767px) {
+  .specialists-section {
+    padding: 4rem 0;
+  }
+
+  .card-image {
+    height: 280px;
   }
 }

@@ -112,6 +112,14 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       });
   }
 
+  selectServiceAndScroll(serviceTitle: string): void {
+    this.contactForm.patchValue({ preferredService: serviceTitle });
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
   private startCarousel(): void {
     this.carouselInterval = setInterval(() => {
       this.currentExperienceImageIndex = (this.currentExperienceImageIndex + 1) % this.experienceImages.length;
