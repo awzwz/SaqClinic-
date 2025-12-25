@@ -15,6 +15,17 @@
   margin: 0.5rem 0;
 }
 
+.footer-phones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+
+  a {
+    margin: 0;
+  }
+}
+
 footer {
   background-color: #020617;
   color: #f9fafb;

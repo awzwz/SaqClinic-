@@ -12,6 +12,7 @@ import { ScrollRevealDirective } from './directives/scroll-reveal.directive';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 import { SpecialistsComponent } from './components/specialists/specialists.component';
 import { PriceListComponent } from './components/price-list/price-list.component';
+import { QRCodeModule } from 'angularx-qrcode';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -33,6 +34,7 @@ import { AppRoutingModule } from './app-routing.module';
     ReactiveFormsModule,
     FormsModule,
     AppRoutingModule,
+    QRCodeModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

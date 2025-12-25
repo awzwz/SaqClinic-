@@ -4,7 +4,8 @@ obj/
 .vscode/
 node_modules/
 dist/
-.angular/cache/
+**/.angular/
+.angular/
 *.db
 publish/
 backend/SaqClinic.Api/credentials.json
