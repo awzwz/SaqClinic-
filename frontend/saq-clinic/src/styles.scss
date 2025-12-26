@@ -13,10 +13,11 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   color: var(--color-text);
   background-color: #fff;
   scroll-behavior: smooth;
@@ -78,7 +79,8 @@ button {
 .section-title {
   text-align: center;
   margin-bottom: 1rem;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: -0.02em;
   font-size: clamp(2.2rem, 4vw, 3rem);
   color: var(--color-primary);
 }

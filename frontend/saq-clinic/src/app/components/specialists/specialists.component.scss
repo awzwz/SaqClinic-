@@ -22,7 +22,7 @@
 }
 
 .section-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: clamp(2rem, 5vw, 3rem);
   color: var(--color-primary);
   margin: 0 0 1rem;
@@ -107,7 +107,7 @@
 }
 
 .specialist-name {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-primary);
@@ -173,6 +173,11 @@
   font-weight: 600;
   font-size: 0.9rem;
   text-align: center;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
 

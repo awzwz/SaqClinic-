@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 })
 export class PriceListComponent {
     // Placeholder URL - User will need to update this or I will ask for it
-    sheetUrl: string = 'https://docs.google.com/spreadsheets/d/19bcO2G2Q8p3BWCq8w1__UOrkWZw3ppd_Btyys-mBoEc/edit?usp=sharing';
+    sheetUrl: string = 'https://docs.google.com/spreadsheets/d/1l-nErqYz_5UVebEswggpBhfb1NPLwYg3EBGWgXHLgdw/edit?usp=sharing';
 
     constructor() { }
 }
