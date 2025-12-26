@@ -55,7 +55,6 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   readonly experienceImages = [
-    'assets/images/experience/exterior.jpg',
     'assets/images/experience/interior.jpg'
   ];
   currentExperienceImageIndex = 0;
